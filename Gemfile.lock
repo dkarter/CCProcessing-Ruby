@@ -1,0 +1,21 @@
+GIT
+  remote: https://github.com/erikhuda/thor.git
+  revision: 615d69cae3ffdcc4c109a1e68a56af0330ce30c3
+  specs:
+    thor (0.18.1)
+
+GIT
+  remote: https://github.com/rorymckinley/luhnacy.git
+  revision: 8c70fde4d856340f5ac0a044692c0ead39c4f2df
+  specs:
+    luhnacy (0.2.1)
+
+GEM
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  luhnacy!
+  thor!
