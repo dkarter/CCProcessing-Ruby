@@ -58,7 +58,19 @@ To run the test suite navigate to the program directory and enter:
 You should see all the tests (58) have passed and displayed in green.
 
 ##  Overview of Design Decisions
+I chose to use BDD with RSpec because it makes it easy to ensure all the requirements for the software have been implemented in the code.
+
+I divided the program into Accounts and Transactions with an interpreter model (main and CCProcApp) to help execute the client commands.
+
+The transactions can be of type credit or charge and are stored in an array in the Account. The Account is responsible for calculating the balance by iterating over the transactions and summing up the charges as positive and credits as negative.
+
+Ideally, I would separate the CCProcApp into an accounts_controller which will contain the add, charge, credit and summary function. However, for the sake of simplicity and time I decided to put them in one. 
 
 ## Why Ruby
-lightweight, elegant syntax, braintree works with ruby on rails, does not require to compile each time, powerful bdd framework, I work on a mac and ruby works great in the terminal.
-gems are really helpful for saving time
+1. Lightweight
+2. Elegant syntax
+3. Does not require to compile each time
+4. Powerful bdd framework (RSpec)
+5. Works great on Mac
+6. Gems are really helpful and time saving (e.g. Luhn 10 gem)
+7. Braintree works with Ruby on Rails so this project is a good opportunity to showcase my skills 
