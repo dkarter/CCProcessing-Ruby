@@ -1,10 +1,10 @@
 CCProcessing
 ============
 
-CCProcApp is a Demo App build for the interview process for Braintree
+CCProcApp is a demo app build for the Braintree interview process
 
 ## Usage Instructions
-To use open a terminal window on your Mac OSX.
+To use open a terminal window on your Mac OS X or Linux.
 
 ### Install
 Extract the files from the supplied zip file, keeping the directory structure intact. Navigate to the program directory and enter the following:
@@ -42,7 +42,7 @@ Enter a command and press the {return} button on your keyboard to submit the com
 
 Please note that the “quit” command does not write the summary, you will have to type “Summary” to view the summary.
 
-Commands are not case sensitve but account names are. You cannot add an account with the same name twice.
+Note that account names are case-sensitive. You cannot add an account with the same name twice.
 
 #### File mode
 I have provided a file with the application for easy testing. This file contains the example from the instructions file and is used in one of the tests for verification. To load the test file navigate to the program directory and type:
@@ -58,7 +58,7 @@ To run the test suite navigate to the program directory and enter:
 You should see all the tests (58) have passed and displayed in green.
 
 ##  Overview of Design Decisions
-I chose to use BDD with RSpec because it makes it easy to ensure all the requirements for the software have been implemented in the code.
+I chose to use BDD with RSpec because it makes it easy to ensure all the requirements for the software have been implemented in the code. It made sure that no regression bugs have occured while adding functionality.
 
 I divided the program into Accounts and Transactions with an interpreter model (main and CCProcApp) to help execute the client commands.
 
@@ -72,5 +72,5 @@ Ideally, I would separate the CCProcApp into an accounts_controller which will c
 3. Does not require to compile each time
 4. Powerful bdd framework (RSpec)
 5. Works great on Mac
-6. Gems are really helpful and time saving (e.g. Luhn 10 gem)
-7. Braintree works with Ruby on Rails so this project is a good opportunity to showcase my skills 
+6. Gems are really helpful and time saving (e.g. Luhn 10 validator, Thor for commandline arguments)
+7. Braintree works with Ruby on Rails so building the project in ruby is a good opportunity to showcase my skills
