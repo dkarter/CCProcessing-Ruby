@@ -3,35 +3,27 @@ require_relative "lib/account"
 class CCProcApp
   @accounts = nil
 
-  def initialize(app_output = $stdout, app_input = $stdin)
-    @app_output = app_output
-    @app_input = app_input
+  def initialize
     @accounts = Hash.new  
   end
   
-  def prompt(*args)
-    @app_output = *args
+  def prompt(args)
+    puts args
     gets
   end
 
-  def app_output
-    @app_output
-  end
-
-  def out=(txt)
-    @app_output = txt
-  end
+  
 
   def process_file(filename)
     begin
-      file = File.new(filename, "r")
-      while (line = file.gets)
-          process_command(line)
+      File.open(filename, "r") do |infile|
+        while (line = infile.gets)
+            process_command line
+        end
       end
-      file.close
       
       print_summary
-      
+
     rescue => err
         puts "Exception: #{err}"
         err
@@ -41,21 +33,20 @@ class CCProcApp
 
   def start(filename = nil)
     if filename
-      
-      abort
+      process_file filename
     else
       prompt_for_commands
     end
   end
 
   def print_instructions
-    out "Please enter a command followed by space delimited parameters.\n"
-    out "Commands include:\n"
-    out "1. Add <name> <cc number> $<amount>\n"
-    out "2. Charge <name> $<amount>\n"
-    out "3. Credit <name> $<amount>\n"
-    out "4. Summary\n"
-    out "5. Quit"
+    puts "Please enter a command followed by space delimited parameters.\n"
+    puts "Commands include:\n"
+    puts "1. Add <name> <cc number> $<amount>\n"
+    puts "2. Charge <name> $<amount>\n"
+    puts "3. Credit <name> $<amount>\n"
+    puts "4. Summary\n"
+    puts "5. Quit"
   end
 
 
@@ -75,7 +66,7 @@ class CCProcApp
 
   def process_command(command)
     command_args = command.split
-    command_name = command_args[0].downcase
+    command_name = command_args[0].downcase if command_args[0]
     
 
     case command_name
@@ -116,8 +107,13 @@ class CCProcApp
     end
   end
 
+  def summary
+    sum = ''
+    @accounts.each { |key, acct| sum += (acct.name + ': $' + acct.balance.to_s + '\\n') }
+  end
+
   def print_summary
-    
+    puts summary
   end
   
   def add_account(name, cc, limit)

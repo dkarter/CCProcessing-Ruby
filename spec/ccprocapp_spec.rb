@@ -132,6 +132,7 @@ describe CCProcApp do
         it "recognizes invalid command" do
           subject.process_command("debit card transaction 1000").should == :invalid_command
           subject.process_command("addsome Test 324234234234234 $100") == :invalid_command
+          subject.process_command("") == :invalid_command
         end
 
         it "with wrong arguments" do
@@ -161,13 +162,38 @@ describe CCProcApp do
 
   context "displays summary" do
     it "contains a list of all account names and balances and error where card is not valid" do
-      subject.start('test.in')
+      subject.start(Dir.pwd + '/spec/test.in')
+      # output.should == 'Lisa: $-93\\nQuincy: error\\nTom: $500'
+      ccapp.summary.should == "Lisa: $-93\nQuincy: error\nTom: $500"
     end
-
   end
   
   
-  it "reads a file if started using the -f parameter and displays summary"
+  it "reads and parses a file with commands" do
+    subject.start(Dir.pwd + '/spec/test.in')
+    subject.get_accounts.length.should be 3
+
+    subject.get_accounts.should include "Tom"
+    subject.get_accounts["Tom"].cc.should == "4111111111111111"
+    subject.get_accounts["Tom"].limit.should == 1000
+    subject.get_accounts["Tom"].name.should == "Tom"
+
+    
+    subject.get_accounts.should include "Lisa"
+    subject.get_accounts["Lisa"].cc.should == "5454545454545454"
+    subject.get_accounts["Lisa"].limit.should == 3000
+    subject.get_accounts["Lisa"].name.should == "Lisa"
+
+    
+    subject.get_accounts.should include "Quincy"
+    subject.get_accounts["Quincy"].cc.should == "1234567890123456"
+    subject.get_accounts["Quincy"].limit.should == 2000
+    subject.get_accounts["Quincy"].name.should == "Quincy"
+
+    subject.get_accounts["Tom"].balance.should == 500
+    subject.get_accounts["Lisa"].balance.should == -93
+    subject.get_accounts["Quincy"].balance.should == 0
+  end    
   
   
 
