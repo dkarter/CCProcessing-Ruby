@@ -1,7 +1,12 @@
 require "spec_helper"
+require 'rspec/mocks/standalone'
 require_relative "../ccprocapp"
 
+
+
 describe CCProcApp do
+
+
   it "has no accounts on start" do
     subject.get_accounts.length.should be 0
     subject.get_accounts.should be {}
@@ -163,8 +168,7 @@ describe CCProcApp do
   context "displays summary" do
     it "contains a list of all account names and balances and error where card is not valid" do
       subject.start(Dir.pwd + '/spec/test.in')
-      # output.should == 'Lisa: $-93\\nQuincy: error\\nTom: $500'
-      ccapp.summary.should == "Lisa: $-93\nQuincy: error\nTom: $500"
+      subject.summary.should == "Lisa: $-93\nQuincy: error\nTom: $500"
     end
   end
   

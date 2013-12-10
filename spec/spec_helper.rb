@@ -5,6 +5,9 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  
+  config.deprecation_stream = 'log/deprecations.log'
+
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
@@ -14,4 +17,18 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random'
+
+  original_stderr = $stderr
+  original_stdout = $stdout
+  config.before(:all) do 
+    # Redirect stderr and stdout
+    $stderr = File.new('./null.txt', 'w')
+    $stdout = File.new('./null.txt', 'w')
+  end
+  config.after(:all) do 
+    $stderr = original_stderr
+    $stdout = original_stdout
+  end
+
+
 end

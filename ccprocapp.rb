@@ -8,7 +8,7 @@ class CCProcApp
   end
   
   def prompt(args)
-    puts args
+    print args
     gets
   end
 
@@ -109,7 +109,14 @@ class CCProcApp
 
   def summary
     sum = ''
-    @accounts.each { |key, acct| sum += (acct.name + ': $' + acct.balance.to_s + '\\n') }
+    sorted_accts = @accounts.sort_by { |k, v| k}
+    # raise sorted_accts.to_s
+    sorted_accts.each do |v| 
+      acct = @accounts[v[0]]
+      sum += acct.name + ': '
+      sum += (acct.valid? ? '$' + acct.balance.to_s : 'error') + "\n"
+    end
+    return sum.chomp
   end
 
   def print_summary
