@@ -1,4 +1,11 @@
 CCProcessing
 ============
 
-CC Processing Demo App for Braintree
+CCProcApp is a Demo App build for the interview process for Braintree
+
+## Usage Instructions
+To use
+##  Overview of Design Decisions
+
+## Why Ruby
+
