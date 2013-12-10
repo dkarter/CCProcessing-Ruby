@@ -4,17 +4,14 @@ require_relative "lib/account"
 
 class CCProcApp < Thor
   include Thor::Actions
+
   no_commands do
     @accounts = nil
 
     def initialize
       @accounts = Hash.new  
     end
-    
-    # def prompt(args)
-    #   print args
-    #   gets
-    # end
+
 
     def process_file(filename)
       begin
@@ -76,7 +73,7 @@ class CCProcApp < Thor
         :quit
 
       when "add"
-        if /^[aA]{1}dd \w+ \d+ \$\d+$/.match(command)
+        if /^[aA]{1}dd \w+ \d{12,19} \$\d+$/.match(command)
           add_account(command_args[1], command_args[2], command_args[3].tr('$','').to_i)
           :add
         else
@@ -109,6 +106,8 @@ class CCProcApp < Thor
       end
     end
 
+
+
     def summary
       sum = ''
       sorted_accts = @accounts.sort_by { |k, v| k}
@@ -121,6 +120,7 @@ class CCProcApp < Thor
       return sum.chomp
     end
 
+
     def print_summary
       puts summary
     end
@@ -131,17 +131,20 @@ class CCProcApp < Thor
       end
     end
 
+
     def credit_account(name, amount)
       if @accounts.has_key? name
         @accounts[name].credit(amount)
       end
     end
 
+
     def charge_account(name, amount)
       if @accounts.has_key? name
         @accounts[name].charge(amount)
       end
     end
+
 
     def get_accounts
       @accounts
