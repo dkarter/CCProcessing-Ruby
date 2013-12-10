@@ -1,14 +1,13 @@
 class Transaction
-  attr_accessor :amount, :timestamp
+  attr_accessor :amount
 
-  def initialize(options = {})
-    @amount = options[:amount]
-    @transaction_type = options[:transaction_type]
-    @timestamp = options[:timestamp]
+  def initialize(transaction_type = 0, amount = 0)
+    @amount = amount
+    @transaction_type = transaction_type
   end
 
   def transaction_type
-    return :unknown
+    @transaction_type
   end
 
 
