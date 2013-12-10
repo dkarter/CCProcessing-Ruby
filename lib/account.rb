@@ -25,7 +25,11 @@ class Account
   def balance
     sum = 0
     @transactions.each do |trans| 
-      sum += trans.transaction_type == :credit ? (0 - trans.amount) : trans.amount
+      if trans.transaction_type == :credit
+        sum += (0 - trans.amount)
+      elsif trans.transaction_type == :charge
+        sum += trans.amount
+      end
     end
 
     return sum

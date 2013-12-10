@@ -3,19 +3,45 @@ require_relative "lib/account"
 class CCProcApp
   @accounts = nil
 
-  def initialize
+  def initialize(app_output = $stdout, app_input = $stdin)
+    @app_output = app_output
+    @app_input = app_input
     @accounts = Hash.new  
   end
   
   def prompt(*args)
-    print(*args)
+    @app_output = *args
     gets
   end
 
+  def app_output
+    @app_output
+  end
 
-  def start(file = nil)
-    if file
-      puts "Got file..."
+  def out=(txt)
+    @app_output = txt
+  end
+
+  def process_file(filename)
+    begin
+      file = File.new(filename, "r")
+      while (line = file.gets)
+          process_command(line)
+      end
+      file.close
+      
+      print_summary
+      
+    rescue => err
+        puts "Exception: #{err}"
+        err
+    end
+  end
+
+
+  def start(filename = nil)
+    if filename
+      
       abort
     else
       prompt_for_commands
@@ -23,13 +49,13 @@ class CCProcApp
   end
 
   def print_instructions
-    puts "Please enter a command followed by space delimited parameters.\n"
-    puts "Commands include:\n"
-    puts "1. Add <name> <cc number> $<amount>\n"
-    puts "2. Charge <name> $<amount>\n"
-    puts "3. Credit <name> $<amount>\n"
-    puts "4. Summary\n"
-    puts "5. Quit"
+    out "Please enter a command followed by space delimited parameters.\n"
+    out "Commands include:\n"
+    out "1. Add <name> <cc number> $<amount>\n"
+    out "2. Charge <name> $<amount>\n"
+    out "3. Credit <name> $<amount>\n"
+    out "4. Summary\n"
+    out "5. Quit"
   end
 
 
@@ -40,42 +66,75 @@ class CCProcApp
 
     while !quitting
       command = prompt("> ")
-      command_name = command.downcase.split[0]
-
-      result = process_command(command_name, command)
+      
+      result = process_command(command)
 
       quitting = true if result == :quit
     end
   end
 
-  def process_command(command_name, command_string)
+  def process_command(command)
+    command_args = command.split
+    command_name = command_args[0].downcase
+    
+
     case command_name
     when "quit"
       :quit
+
     when "add"
-      command_args = command_string.split
-      #validate with regex matcher
-      add_account(name: command_args[1], cc: command_args[2], limit: command_args[3])
-      :add
+      if /^[aA]{1}dd \w+ \d+ \$\d+$/.match(command)
+        add_account(command_args[1], command_args[2], command_args[3].tr('$','').to_i)
+        :add
+      else
+        :invalid_command
+      end
+
     when "credit"
-      :credit
+      if /^[cC]{1}redit \w+ \$\d+$/.match(command)
+        credit_account(command_args[1], command_args[2].tr('$','').to_i)
+        :credit
+      else
+        :invalid_command
+      end
+
     when "charge"
-      :charge
+      if /^[cC]{1}harge \w+ \$\d+$/.match(command)
+        charge_account(command_args[1], command_args[2].tr('$','').to_i)
+        :charge
+      else
+        :invalid_command
+      end
+
     when "summary"
+      print_summary
       :summary
+
     else
       :invalid_command
-      #puts "Invalid Command"
+
     end
   end
 
   def print_summary
-    puts "not implemented"
+    
   end
   
   def add_account(name, cc, limit)
     if !@accounts.has_key? name
       @accounts[name] = Account.new(name, cc, limit)
+    end
+  end
+
+  def credit_account(name, amount)
+    if @accounts.has_key? name
+      @accounts[name].credit(amount)
+    end
+  end
+
+  def charge_account(name, amount)
+    if @accounts.has_key? name
+      @accounts[name].charge(amount)
     end
   end
 

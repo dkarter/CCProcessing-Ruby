@@ -28,9 +28,61 @@ describe Account do
     end
   end
 
-  
-  context "can be initialized with a name, credit card, and a limit" do
-    it "can be initialized with invalid card" do
+  context "checks cards for validity" do
+    context "detects valid cards" do
+      # cc nums from http://www.getcreditcardnumbers.com/
+      
+      it "by Visa" do    
+        cards = ["4556901563769131",
+                 "4121277443502299",
+                 "4916444426715657",
+                 "4024007195099790",
+                 "4024007154225758",
+                 "4232186631466",
+                 "4514386983999",
+                 "4485187130991",
+                 "4532244819916",
+                 "4532056159302"]
+        cards.each do |card|
+          subject.cc = card
+          subject.should be_valid        
+        end
+      end
+      
+      it "by Mastercard" do    
+        cards = ["5534042043980859",
+                 "5560181367900791",
+                 "5329201577198960",
+                 "5165710228198226",
+                 "5390578404244826"]
+        cards.each do |card|
+          subject.cc = card
+          subject.should be_valid        
+        end
+      end
+    end
+
+    it "detects invalid cards" do
+        cards = ["4556931",
+                 "412127744350229234329",
+                 "4234443234553",
+                 "0024007195099790",
+                 "1111111111111111",
+                 "3",
+                 "4516386983990",
+                 "4485197130991",
+                 "4532244819992",
+                 "4532056153303"]
+        cards.each do |card|
+          subject.cc = card
+          subject.should_not be_valid        
+        end
+      end
+  end
+
+
+  context "can be initialized" do
+    it "with invalid card" do
       acct = Account.new("Test", "1234567890000000", 1000)
       acct.name.should == "Test"
       acct.cc.should == "1234567890000000"
@@ -47,8 +99,6 @@ describe Account do
       acct.should be_valid
       acct.balance.should == 0
     end
-
-    
   end
       
   context "transactions" do
