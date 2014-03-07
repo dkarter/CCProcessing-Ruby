@@ -51,10 +51,14 @@ I have provided a file with the application for easy testing. This file contains
 
 
 ### Test
+First we must make sure you have rspec installed on your system, for that you are going to need to run:
+	
+	$ gem install rspec
+
 To run the test suite navigate to the program directory and enter:
 
 	$ rspec
-	
+
 You should see all the tests (58) have passed and displayed in green.
 
 ##  Overview of Design Decisions

@@ -1,13 +1,15 @@
 require "spec_helper"
+require "rubygems"
 require "account"
 
 describe Account do
-  context "has no initial data" do
-    its (:name) { should be_empty }
-    its (:balance) { should be 0 }
-    its (:cc) { should be_empty }
-    its (:limit) { should be 0 }
-    #its (stub!(:transactions)) { should be_empty }
+  context "new account" do
+    it "has no initial data" do
+      subject.name.should be_empty
+      subject.balance.should be 0
+      subject.cc.should be_empty
+      subject.limit.should be 0
+    end
   end
 
   context "responds to methods and accessors" do

@@ -111,7 +111,6 @@ class CCProcApp < Thor
     def summary
       sum = ''
       sorted_accts = @accounts.sort_by { |k, v| k}
-      # raise sorted_accts.to_s
       sorted_accts.each do |v| 
         acct = @accounts[v[0]]
         sum += acct.name + ': '
