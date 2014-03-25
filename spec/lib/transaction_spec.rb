@@ -27,8 +27,12 @@ describe Transaction do
   end
 
   context "responds to methods and accessors" do
-    subject { Transaction.new(:credit, 1200) }
-    it { subject.should respond_to :amount }
-    it { subject.should respond_to :transaction_type }
+    let(:transaction) { Transaction.new(:credit, 1200) }
+    it "should respond to amount" do
+       expect(transaction).to respond_to :amount
+    end
+    it "should respond to transaction_type" do
+      expect(transaction).to respond_to :transaction_type
+    end
   end
 end

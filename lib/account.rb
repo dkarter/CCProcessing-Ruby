@@ -7,11 +7,12 @@ class Account
   
   
 
-  def initialize(name = "", cc = "", limit = 0)
-    @name = name
-    @limit = limit
-    @cc = cc
-    @transactions = Array.new
+  def initialize(attr = {})
+    @name = attr.fetch(:name, "")
+    @limit = attr.fetch(:limit, 0)
+    @cc = attr.fetch(:cc, "")
+    @transactions = attr.fetch(:transactions, [])
+    @validator = attr.fetch(:validator)
   end
 
   def charge(amount)
@@ -26,7 +27,7 @@ class Account
     sum = 0
     @transactions.each do |trans| 
       if trans.transaction_type == :credit
-        sum += (0 - trans.amount)
+        sum -= trans.amount
       elsif trans.transaction_type == :charge
         sum += trans.amount
       end
@@ -36,7 +37,7 @@ class Account
   end
 
   def valid?
-    Luhnacy.valid?(cc)
+    @validator.valid? cc
   end
   
 end
