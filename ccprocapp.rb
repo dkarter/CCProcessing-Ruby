@@ -1,6 +1,7 @@
 require "rubygems"
 require "thor"
 require_relative "lib/account"
+require_relative "lib/luhnacy"
 
 class CCProcApp < Thor
   include Thor::Actions
@@ -126,7 +127,7 @@ class CCProcApp < Thor
     
     def add_account(name, cc, limit)
       if !@accounts.has_key? name
-        @accounts[name] = Account.new(name, cc, limit)
+        @accounts[name] = Account.new(name: name, cc: cc, limit: limit, validator: Luhnacy)
       end
     end
 
