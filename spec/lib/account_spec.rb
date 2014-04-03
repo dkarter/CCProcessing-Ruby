@@ -4,42 +4,23 @@ require_relative "../../lib/account"
 describe Account do
 	let(:validator) { double("validator") }
 	let(:mock_cc) { "4111111111111111" }
-	let(:account) { Account.new name: "Test", cc: mock_cc , limit: 1000, validator: validator }
+	let(:transaction) { double("Transaction") }
+	let(:transactions) { [] }
+	let(:account) { Account.new name: "Test", 
+								  cc: mock_cc , 
+							   limit: 1000, 
+						   validator: validator,
+						 transaction: transaction,
+						transactions: transactions }
 	
 	context "new account" do
-		let(:account) { Account.new validator: validator }
+		let(:account) { Account.new validator: validator, transaction: transaction }
 		it "has no initial data" do
 			expect(account.name).to be_empty
 			expect(account.balance).to eq(0)
 			expect(account.cc).to be_empty
 			expect(account.limit).to eq(0)
 		end
-	end
-
-	context "responds to methods and accessors" do
-		it "should respond to balance" do
-			 expect(account).to respond_to :balance
-		end
-		it "should respond to name" do
-			expect(account).to respond_to :name
-		end
-
-		it "should respond to cc" do
-			expect(account).to respond_to :cc
-		end
-
-		it "should respond to valid?" do
-			expect(account).to respond_to :valid?
-		end
-
-		it "should respond to charge" do
-			expect(account).to respond_to :charge
-		end
-
-		it "should respond to credit" do
-			expect(account).to respond_to :credit
-		end
-
 	end
 
 
@@ -56,63 +37,100 @@ describe Account do
 		context "account with a valid card" do
 			before(:each) do
 				validator.stub(:valid?).and_return(true)
+				transaction.stub(:new).and_return(transaction)
 			end      
 
-			it "can add a charge to increase balance" do
-				expect(account.balance).to eq(0)
-				account.charge 500
-				expect(account.balance).to eq(500)
-				account.charge 23
-				expect(account.balance).to eq(523)
+			it "can add a charge transaction" do
+				transaction.should_receive(:new).with(:charge, 325)
+				account.charge(325)
+				expect(transactions[0]).to eq(transaction)
+			end
+
+			it "can add a credit transaction" do
+				transaction.should_receive(:new).with(:credit, 325)
+				account.credit(325)
+				expect(transactions[0]).to eq(transaction)
 			end
 			
-			it "ignores charges that would raise the balance over the limit as if they were declined" do
-				account.charge 1203
-				account.balance.should be 0
-				account.charge 350
-				account.balance.should be 350
-				account.charge 651
-				account.balance.should be 350
-			end
 
-			it "allows charges that are the limit amount" do
-				account.limit.should be 1000
-				account.charge 1000
-				account.balance.should be 1000
-			end
+			context "limit calculation" do
+				it "ignores charges that would raise the balance over the limit as if they were declined" do
+					transaction.should_not_receive(:new)
+					expect(account.limit).to eq(1000)
+					account.stub(:balance).and_return(900)
+					account.charge(101)
+				end
 
-			it "can add a credit" do
-				account.charge 350
-				account.balance.should be 350
-				account.credit 50
-				account.balance.should be 300
-				account.credit 300
-				account.balance.should be 0
-			end
+				it "allows charges that are within the limit amount" do
+					transaction.should_receive(:new).twice
+					expect(account.limit).to eq(1000)
+					account.stub(:balance).and_return(900)
+					account.charge(90)
+					account.charge(100)
+				end
 
+			end
+		end
+
+		context "balance" do
 			context "negative balance" do
-				let(:account) { Account.new transactions: [ credit_tran(300), credit_tran(120) ], validator: validator }
+				let(:transactions) { [double("Transaction", transaction_type: :credit, amount: 300),
+									  double("Transaction", transaction_type: :charge, amount: 200),
+								      double("Transaction", transaction_type: :credit, amount: 121)] }				
+				let(:account) { Account.new transactions: transactions, validator: validator, transaction: transaction }
 				
 				it "calculates a negative balance for transactions that would drop the balance below 0" do			
-					expect(account.balance).to eq(-420)
+					expect(account.balance).to eq(-221)
 				end
 			end
 			
-		end
+			context "positive balance" do
+				let(:transactions) { [double("Transaction", transaction_type: :charge, amount: 300),
+									  double("Transaction", transaction_type: :credit, amount: 200),
+								      double("Transaction", transaction_type: :charge, amount: 121)] }				
+				let(:account) { Account.new transactions: transactions, validator: validator, transaction: transaction }
+				
+				it "calculates a positive balance with mixed transactions" do			
+					expect(account.balance).to eq(221)
+				end
+			end
 
+
+			context "balance string" do
+				it "returns a positive balance string for valid cards and positive balance" do
+					validator.stub(:valid?).and_return(true)
+					account.stub(:balance).and_return(555)
+					expect(account.balance_string).to eq("$555")
+				end
+
+				it "returns error when the account (card) is not valid" do
+					validator.stub(:valid?).and_return(false)
+					account.stub(:balance).and_return(555)
+					expect(account.balance_string).to eq("error")
+				end
+
+				it "returns a negative balance string with the dollar sign before the minus sign" do
+					validator.stub(:valid?).and_return(true)
+					account.stub(:balance).and_return(-555)
+					expect(account.balance_string).to eq("$-555")
+				end			  
+			end
+
+		end
+		
 		context "invalid card behavior" do
 			before(:each) do
 				validator.stub(:valid?).and_return(false)
 			end
 
 			it "ignores charges" do
+				transaction.should_not_receive(:new)
 				account.charge 300
-				expect(account.balance).to eq(0)
 			end
 
 			it "ignores credits" do
+				transaction.should_not_receive(:new)
 				account.credit 300
-				expect(account.balance).to eq(0)
 			end
 		end
 		

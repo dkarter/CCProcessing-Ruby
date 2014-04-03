@@ -1,21 +1,15 @@
 require "spec_helper"
-require "transaction"
+require_relative "../../lib/transaction"
 
 describe Transaction do
-  it "has no initial amount" do
-    trans = Transaction.new(:credit)
-    trans.amount.should be 0
+
+  context "defaults" do
+    let(:transaction) { Transaction.new :credit }
+    it "has no initial amount" do
+      expect(transaction.amount).to eq(0)
+    end  
   end
   
-  it "can set amount" do
-    trans = Transaction.new(:credit)
-    trans.amount.should be 0
-    trans.amount = 500
-    trans.amount.should be 500
-    trans.amount = 251
-    trans.amount.should be 251
-  end
-
   it "can be initialized with an amount and a transaction type" do
     trans = Transaction.new(:credit, 100)
     trans.transaction_type.should be :credit

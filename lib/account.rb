@@ -1,11 +1,5 @@
-require 'rubygems'
-require_relative 'luhnacy'
-require_relative 'transaction'
-
 class Account
   attr_accessor :name, :cc, :limit
-  
-  
 
   def initialize(attr = {})
     @name = attr.fetch(:name, "")
@@ -13,14 +7,15 @@ class Account
     @cc = attr.fetch(:cc, "")
     @transactions = attr.fetch(:transactions, [])
     @validator = attr.fetch(:validator)
+    @transaction = attr.fetch(:transaction)
   end
 
   def charge(amount)
-    @transactions << Transaction.new(:charge, amount) if valid? && (balance + amount) <= limit
+    @transactions << @transaction.new(:charge, amount) if valid? && (balance + amount) <= limit
   end
 
   def credit(amount)
-    @transactions << Transaction.new(:credit, amount) if valid?
+    @transactions << @transaction.new(:credit, amount) if valid?
   end
 
   def balance
@@ -34,6 +29,10 @@ class Account
     end
 
     return sum
+  end
+
+  def balance_string
+    valid? ? '$' + balance.to_s : 'error'
   end
 
   def valid?
