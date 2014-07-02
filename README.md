@@ -1,7 +1,7 @@
 CCProcessing
 ============
 
-CCProcessing is a demo app built by Dorian Karter for the Braintree Software Engineer interview process
+CCProcessing is a demo app built by Dorian Karter as a demonstration of my coding skills
 
 ## Dependencies
 This application uses the following gems:
@@ -91,8 +91,3 @@ I divided the program into the following parts:
 
 ## Why Ruby
 Ruby provides a great testing framework and tools to assist in TDD. RSpec provides with great mocking and stubbing tools which made testing the dependency injection design pattern a pleasure. Guard makes sure that after every change made to the code the tests immediately relevant to that code run.
-
-Although I could have written this task in any object-oriented language fairly easily, I prefer to showcase my Ruby skills considering that Braintree uses Ruby for active development.
-
-## Final Notes
-Thank you for taking the time out of your busy day to read through this guide and evaluate my code! If you encounter any issues at all do not hesitate to contact me at (773) 470-6209 or [jobs@doriankarter.com](mailto:jobs@doriankarter.com)
