@@ -1,7 +1,7 @@
 CCProcessing
 ============
 
-CCProcessing is a demo app built by Dorian Karter as a demonstration of my coding skills
+CCProcessing is a demo app built by Dorian Karter a Software Engineer from Chicago, IL.
 
 ## Dependencies
 This application uses the following gems:
